@@ -28,6 +28,7 @@ class Civilian extends Person
     constructor (xPos, yPos, width, height)
     {
         super(xPos, yPos, width, height);
+        this.isKiller = false;
         this.hatColor = colorArray[randomNum(0, colorArray.length)]    // Hat color
         this.shirtColor = colorArray[randomNum(0, colorArray.length)]    // Shirt color
         this.pantsColor = colorArray[randomNum(0, colorArray.length)]    // Pants color
@@ -44,6 +45,14 @@ class Civilian extends Person
         ctx.fillRect(this.x, this.y + 25, this.width, 20);
         ctx.fillStyle = this.shoeColor;
         ctx.fillRect(this.x, this.y + 45, this.width, 5);
+    }
+}
+class Killer extends Civilian
+{
+    constructor (xPos, yPos, width, height)
+    {
+        super(xPos, yPos, width, height);
+        this.isKiller = true;
     }
 }
 
@@ -123,6 +132,8 @@ for (let i = 0; i < civInit; i++)
     if (i === killerIndex)    // Make this random NPC the killer
     {
         console.log("muahahaha")
+        const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
+        civArray.push(killer);
     }
     else
     {
