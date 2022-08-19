@@ -9,7 +9,7 @@ const colorArray = ["red", "blue", "white", "black"];
 
 class Person    // Super class for all moving game entities
 {
-    constructor(xPos, yPos, width, height)
+    constructor (xPos, yPos, width, height)
     {
         this.x = xPos;
         this.y = yPos;
@@ -25,17 +25,25 @@ class Person    // Super class for all moving game entities
 }
 class Civilian extends Person
 {
+    constructor (xPos, yPos, width, height)
+    {
+        super(xPos, yPos, width, height);
+        this.hatColor = colorArray[randomNum(0, colorArray.length)]    // Hat color
+        this.shirtColor = colorArray[randomNum(0, colorArray.length)]    // Shirt color
+        this.pantsColor = colorArray[randomNum(0, colorArray.length)]    // Pants color
+        this.shoeColor = colorArray[randomNum(0, colorArray.length)]    // Shoe color
+    }
     render = () =>
     {
         // Default height: 50px (5px hat 20px shirt, 20px pants, 5px shoes)
-        ctx.fillStyle = "white";
-        ctx.fillRect(this.x, this.y, this.width, 5); // Hat color
-        ctx.fillStyle = "red";
-        ctx.fillRect(this.x, this.y + 5, this.width, 20); // Shirt color
-        ctx.fillStyle = "blue";
-        ctx.fillRect(this.x, this.y + 25, this.width, 20); // Pants color
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.x, this.y + 45, this.width, 5); // Shoe color
+        ctx.fillStyle = this.hatColor;
+        ctx.fillRect(this.x, this.y, this.width, 5);
+        ctx.fillStyle = this.shirtColor;
+        ctx.fillRect(this.x, this.y + 5, this.width, 20);
+        ctx.fillStyle = this.pantsColor;
+        ctx.fillRect(this.x, this.y + 25, this.width, 20);
+        ctx.fillStyle = this.shoeColor;
+        ctx.fillRect(this.x, this.y + 45, this.width, 5);
     }
 }
 
@@ -109,7 +117,7 @@ const gameUpdate = () =>
 // TEMP
 const player = new Person(500, 0, 25, 50);    // Initialization of Player
 const civInit = 7;    // How many NPCs to start out with
-const killerIndex = Math.floor(Math.random() * civInit)
+const killerIndex = Math.floor(Math.random() * civInit);
 for (let i = 0; i < civInit; i++)
 {
     if (i === killerIndex)    // Make this random NPC the killer
