@@ -5,6 +5,7 @@ const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 canvas.setAttribute("height", getComputedStyle(canvas).height);
 canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
+const colorArray = ["red", "blue", "white", "black"];
 
 class Person    // Super class for all moving game entities
 {
@@ -39,13 +40,9 @@ class Civilian extends Person
 }
 
 // FUNCTIONS
-const randomX = () =>    // Give random x-coordinate within canvas space
+const randomNum = (min, max) =>
 {
-    return Math.floor(Math.random() * (canvas.width - 25));    // Max @ 25px left of end to allow space for object model
-}
-const randomY = () =>    // Give random y-coordinate within canvas space
-{
-    return Math.floor(Math.random() * (canvas.height - 50));    // Max @ 50px above end to allow space for object model
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 const playerInput = e =>
 {
@@ -111,9 +108,19 @@ const gameUpdate = () =>
 
 // TEMP
 const player = new Person(500, 0, 25, 50);    // Initialization of Player
-for (let i = 0; i < 2; i++)
+const civInit = 7;    // How many NPCs to start out with
+const killerIndex = Math.floor(Math.random() * civInit)
+for (let i = 0; i < civInit; i++)
 {
-    const newCiv = new Civilian(randomX(), randomY(), 25, 50);
-    civArray.push(newCiv);
+    if (i === killerIndex)    // Make this random NPC the killer
+    {
+        console.log("muahahaha")
+    }
+    else
+    {
+        // 25px and 50px for max in random num gen to allow space for object model
+        const newCiv = new Civilian(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
+        civArray.push(newCiv);
+    }
 }
 const gameUpdateInterval = setInterval(gameUpdate, 100);    // USE FOR REFRESHING SCREEN EVERY 60 ms
