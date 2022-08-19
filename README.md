@@ -10,7 +10,7 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 
 ![Wireframe](./img/wireframe.png)
 
-## MVP
+## MVP Goals
 
 * Create game space using canvas
 * Render player and allow WASD input to move
@@ -35,3 +35,16 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 * Blackout event: at random or certain intervals, black out the screen where civilians continue to move and the killer starts to kill civilians it walks into
 * Add more space when walking up, to the right, down, or to the left of the starting room
 * Accessibility mode: color blindness; make text with relevant colors layered on top of civilians (or on the list if implemented)
+
+## Tech Stack
+
+* HTML
+* CSS
+* JavaScript
+
+## Things to Consider
+
+* Best way to load game? (Turn-Based vs. Real-Time Intervals)
+* Should player and civilians be allowed to pass through each other?
+* Is logic implementation necessary to ensure unique design of each civilian?
+    * e.g. If 7 colors available for each clothing item; 7<sup>4</sup> = 2401 possible permutations
