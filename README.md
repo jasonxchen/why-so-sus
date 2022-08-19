@@ -34,6 +34,7 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 * Hide obtained clues after a certain time to add difficulty
 * Blackout event: at random or certain intervals, black out the screen where civilians continue to move and the killer starts to kill civilians it walks into
 * Add more space when walking up, to the right, down, or to the left of the starting room
+    * Alternative: add condition to "wrap to the other side"; i.e. walk past the bottom of the canvas and appear at the top
 * Accessibility mode: color blindness; make text with relevant colors layered on top of civilians (or on the list if implemented)
 
 ## Tech Stack
@@ -48,3 +49,4 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 * Should player and civilians be allowed to pass through each other?
 * Is logic implementation necessary to ensure unique design of each civilian?
     * e.g. If 7 colors available for each clothing item; 7<sup>4</sup> = 2401 possible permutations
+    * Also consider having less colors so that the player needs more clues to pinpoint the target
