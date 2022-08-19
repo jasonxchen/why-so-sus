@@ -5,7 +5,8 @@ const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 canvas.setAttribute("height", getComputedStyle(canvas).height);
 canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
-const colorArray = ["red", "blue", "white", "black"];
+const colorArray = ["red", "lime", "blue", "black"];
+const noteArray = [];
 
 class Person    // Super class for all moving game entities
 {
@@ -53,6 +54,23 @@ class Killer extends Civilian
     {
         super(xPos, yPos, width, height);
         this.isKiller = true;
+    }
+}
+class Note    // Simple enough to extend from person; new super class for semantics
+{
+    constructor (xPos, yPos, width, height, info)
+    {
+        this.x = xPos;
+        this.y = yPos;
+        this.width = width;
+        this.height = height;
+        this.info = info;
+        this.unobtained = true;
+    }
+    render = () =>
+    {
+        ctx.fillStyle = "rgba(237, 224, 216, 1)";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -114,11 +132,18 @@ const gameUpdate = () =>
     {
         player.render();
     }
-    civArray.forEach((civilian, i) =>
+    civArray.forEach((civilian) =>
     {
         if (civilian.isAlive)
         {
             civilian.render();
+        }
+    })
+    noteArray.forEach((note) =>
+    {
+        if (note.unobtained)
+        {
+            note.render();
         }
     })
 }
@@ -127,12 +152,11 @@ const gameUpdate = () =>
 const player = new Person(500, 0, 25, 50);    // Initialization of Player
 const civInit = 7;    // How many NPCs to start out with
 const killerIndex = Math.floor(Math.random() * civInit);
+const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
 for (let i = 0; i < civInit; i++)
 {
     if (i === killerIndex)    // Make this random NPC the killer
     {
-        console.log("muahahaha")
-        const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
         civArray.push(killer);
     }
     else
@@ -142,4 +166,13 @@ for (let i = 0; i < civInit; i++)
         civArray.push(newCiv);
     }
 }
+// Pushing the (4) notes to array
+let newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Hat color: ${killer.hatColor}`);
+noteArray.push(newNote);
+newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shirt color: ${killer.shirtColor}`);
+noteArray.push(newNote);
+newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Pants color: ${killer.pantsColor}`);
+noteArray.push(newNote);
+newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
+noteArray.push(newNote);
 const gameUpdateInterval = setInterval(gameUpdate, 100);    // USE FOR REFRESHING SCREEN EVERY 60 ms
