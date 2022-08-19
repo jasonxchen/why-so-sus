@@ -6,7 +6,7 @@ canvas.setAttribute("height", getComputedStyle(canvas).height);
 canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
 const colorArray = ["red", "lime", "blue", "black"];
-const noteArray = [];
+const clueArray = [];
 
 class Person    // Super class for all moving game entities
 {
@@ -56,7 +56,7 @@ class Killer extends Civilian
         this.isKiller = true;
     }
 }
-class Note    // Simple enough to extend from person; new super class for semantics
+class Clue    // Simple enough to extend from person; new super class for semantics
 {
     constructor (xPos, yPos, width, height, info)
     {
@@ -139,11 +139,11 @@ const gameUpdate = () =>
             civilian.render();
         }
     })
-    noteArray.forEach((note) =>
+    clueArray.forEach((clue) =>
     {
-        if (note.unobtained)
+        if (clue.unobtained)
         {
-            note.render();
+            clue.render();
         }
     })
 }
@@ -166,13 +166,13 @@ for (let i = 0; i < civInit; i++)
         civArray.push(newCiv);
     }
 }
-// Pushing the (4) notes to array
-let newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Hat color: ${killer.hatColor}`);
-noteArray.push(newNote);
-newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shirt color: ${killer.shirtColor}`);
-noteArray.push(newNote);
-newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Pants color: ${killer.pantsColor}`);
-noteArray.push(newNote);
-newNote = new Note(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
-noteArray.push(newNote);
+// Pushing the (4) clues to array
+let newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Hat color: ${killer.hatColor}`);
+clueArray.push(newClue);
+newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shirt color: ${killer.shirtColor}`);
+clueArray.push(newClue);
+newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Pants color: ${killer.pantsColor}`);
+clueArray.push(newClue);
+newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
+clueArray.push(newClue);
 const gameUpdateInterval = setInterval(gameUpdate, 100);    // USE FOR REFRESHING SCREEN EVERY 60 ms
