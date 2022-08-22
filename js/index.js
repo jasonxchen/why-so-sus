@@ -136,11 +136,16 @@ canvas.addEventListener("click", e =>
         // If the point clicked is past NPC's right, left, bottom, and top at the same time respectively
         if (e.clientX - cRect.left <= civilian.x + civilian.width && e.clientX - cRect.left >= civilian.x && e.clientY - cRect.top <= civilian.y + civilian.height && e.clientY - cRect.top >= civilian.y)
         {
-            civilian.isAlive = false;    // Assassinates NPC clicked
-            if (civilian.isKiller)
+            if (civilian.isKiller && killer.isAlive)
             {
+                killer.isAlive = false;
                 gameOver("you win");
+                ctx.clearRect(killer.x, killer.y, killer.width, killer.height);
                 clearInterval(gameUpdateInterval);
+            }
+            else
+            {
+                civilian.isAlive = false;    // Assassinates NPC clicked
             }
         }
     })
@@ -186,41 +191,38 @@ const howToPlay = () =>
 
 const gameUpdate = () =>
 {
-    if (killer.isAlive)    // Don't update canvas if killer is found out the "frame" before; lets the win message stay on screen
+    ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
+    // Rendering
+    if (player.isAlive)
     {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
-        // Rendering
-        if (player.isAlive)
+        player.render();
+    }
+    civArray.forEach(civilian =>
+    {
+        if (civilian.isAlive)
         {
-            player.render();
+            civilian.render();
         }
-        civArray.forEach(civilian =>
+    })
+    clueArray.forEach(clue =>
+    {
+        if (clue.unobtained)
         {
-            if (civilian.isAlive)
+            clue.render();
+            if (checkHit(player, clue))    // Check after render if player walks over clue
             {
-                civilian.render();
-            }
-        })
-        clueArray.forEach(clue =>
-        {
-            if (clue.unobtained)
-            {
-                clue.render();
-                if (checkHit(player, clue))    // Check after render if player walks over clue
-                {
-                    const pushClue = document.createElement("li");
-                    pushClue.innerText = clue.info;
-                    clueList.append(pushClue);
-                    clue.unobtained = false;    // Ater the next gameUpdate "frame," the clue will no longer be rendered
-                }   
-            }
-        })
-        // Loss collision detection
-        if (checkHit(player, killer) && killer.isAlive)
-        {
-            player.isAlive = false;    // Kills player if they encouter the killer
-            gameOver("you died");
+                const pushClue = document.createElement("li");
+                pushClue.innerText = clue.info;
+                clueList.append(pushClue);
+                clue.unobtained = false;    // Ater the next gameUpdate "frame," the clue will no longer be rendered
+            }   
         }
+    })
+    // Loss collision detection
+    if (checkHit(player, killer) && killer.isAlive)
+    {
+        player.isAlive = false;    // Kills player if they encouter the killer
+        gameOver("you died");
     }
 }
 
