@@ -17,9 +17,11 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 * Render harmless civilians and one killer; all of which have randomized hat, shirt, pants, and shoe colors
 * Implement condition where running into the killer will end in a loss
 * Render clues holding color values of the killer
+* Collision detection of clues to pick up their information
 * Implement assassination function by clicking on a civilian
 * End game loop on assassinating the killer
 * Display win or loss on top of canvas
+* Display game instructions at the beginning and dismiss it with button press
 
 ## Stretch Goals
 
@@ -36,6 +38,7 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 * Add more space when walking up, to the right, down, or to the left of the starting room
     * Alternative: add condition to "wrap to the other side"; i.e. walk past the bottom of the canvas and appear at the top
 * Accessibility mode: color blindness; make text with relevant colors layered on top of civilians (or on the list if implemented)
+* Better NPC and object spawning
 * Better movement
 
 ## Tech Stack
@@ -47,6 +50,7 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 ## Things to Consider
 
 * Best way to load game? (Turn-Based vs. Real-Time Intervals)
+    * Answer: Ended up using real-time
 * Should player and civilians be allowed to pass through each other?
 * Is logic implementation necessary to ensure unique design of each civilian?
     * e.g. If 7 colors available for each clothing item; 7<sup>4</sup> = 2401 possible permutations
