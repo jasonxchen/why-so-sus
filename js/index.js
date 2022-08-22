@@ -80,7 +80,7 @@ const randomNum = (min, max) =>
 {
     return Math.floor(Math.random() * (max - min)) + min;
 }
-const playerInput = e =>
+const playerInput = e =>    // Keyboard controls
 {
     const step = 50;    // 1 pixel step at a time
     if (player.isAlive)
@@ -125,6 +125,20 @@ const playerInput = e =>
 }
 document.addEventListener("keydown", playerInput);
 
+canvas.addEventListener("click", e =>
+{
+    // Adjust coordinates so that the top left pixel of canvas will return (0,0)
+    const cRect = canvas.getBoundingClientRect();    // Get canvas pos, width, and height
+    civArray.forEach(civilian =>
+    {
+        // If the point clicked is past NPC's right, left, bottom, and top at the same time respectively
+        if (e.clientX - cRect.left <= civilian.x + civilian.width && e.clientX - cRect.left >= civilian.x && e.clientY - cRect.top <= civilian.y + civilian.height && e.clientY - cRect.top >= civilian.y)
+        {
+            civilian.isAlive = false;    // Assassinates NPC clicked
+        }
+    })
+})
+
 const checkHit = (objOne, objTwo) =>
 {
     // If objOne passes objTwo on objTwo's right, left, bottom, and top at the same time respectively
@@ -156,14 +170,14 @@ const gameUpdate = () =>
     {
         player.render();
     }
-    civArray.forEach((civilian) =>
+    civArray.forEach(civilian =>
     {
         if (civilian.isAlive)
         {
             civilian.render();
         }
     })
-    clueArray.forEach((clue) =>
+    clueArray.forEach(clue =>
     {
         if (clue.unobtained)
         {
@@ -177,7 +191,7 @@ const gameUpdate = () =>
             }   
         }
     })
-    if (checkHit(player, killer))
+    if (checkHit(player, killer) && killer.isAlive)
     {
         player.isAlive = false;    // Kills player if they encouter the killer
         gameOver("you died");
