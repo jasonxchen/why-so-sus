@@ -21,7 +21,7 @@ class Person    // Super class for all moving game entities
     }
     render = () =>
     {
-        ctx.fillStyle = "black";    // Default black render
+        ctx.fillStyle = "hotpink";    // Default hotpink render
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
@@ -82,7 +82,7 @@ const randomNum = (min, max) =>
 }
 const playerInput = e =>    // Keyboard controls
 {
-    const step = 50;    // 1 pixel step at a time
+    const step = 50;    // # pixel step at a time
     if (player.isAlive)
     {
         switch (e.key)
@@ -115,12 +115,9 @@ const playerInput = e =>    // Keyboard controls
                     player.x = canvas.width - player.width;        // Prevent moving out of right of screen
                 }
                 break;
-//          case " ":
-//              console.log("pew");
             default:
                 break;
         }
-//        gameUpdate();    // USE FOR REFRESHING SCREEN ON MOVEMENT
     }
 }
 document.addEventListener("keydown", playerInput);
@@ -203,8 +200,8 @@ const gameUpdate = () =>
     }
 }
 
-// TEMP
-const player = new Person(500, 0, 25, 50);    // Initialization of Player
+// MORE VARIABLES
+const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
 const civInit = 7;    // How many NPCs to start out with
 const killerIndex = Math.floor(Math.random() * civInit);
 const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
@@ -230,4 +227,4 @@ newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height -
 clueArray.push(newClue);
 newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
 clueArray.push(newClue);
-const gameUpdateInterval = setInterval(gameUpdate, 100);    // USE FOR REFRESHING SCREEN EVERY 60 ms
+const gameUpdateInterval = setInterval(gameUpdate, 100);    // Start game with refresh rate of 1000/# frames per second
