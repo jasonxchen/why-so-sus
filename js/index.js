@@ -83,8 +83,13 @@ const randomNum = (min, max) =>
 const playerInput = e =>    // Keyboard controls
 {
     const step = 50;    // # pixel step at a time
-    if (player.isAlive)
+    if (player.isAlive && killer.isAlive)    // Stops movement if either is killed
     {
+        if (gameUpdateInterval === 0)
+        {
+            gameUpdateInterval = setInterval(gameUpdate, 100);    // Start game with refresh rate of 1000/# frames per second on keyboard input
+            return;    // Does not factor in first keyboard input for player movement
+        }
         switch (e.key)
         {
             case "w":
@@ -164,39 +169,58 @@ const gameOver = (message) =>
     ctx.fillText(message, canvas.width / 2, canvas.height / 2);
 }
 
+const howToPlay = () =>
+{
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(50, 50, canvas.width - 100, canvas.height - 100);
+    ctx.font = "30px Comic Sans MS";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 150);
+    ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 80);
+    ctx.fillText("2. Left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 30);
+    ctx.fillText("3. Avoid the killer or else you lose", canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText("4. Use WASD to move", canvas.width / 2, canvas.height / 2 + 70);
+    ctx.fillText("5. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 120);
+}
+
 const gameUpdate = () =>
 {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
-    // Rendering
-    if (player.isAlive)
+    if (killer.isAlive)    // Don't update canvas if killer is found out the "frame" before; lets the win message stay on screen
     {
-        player.render();
-    }
-    civArray.forEach(civilian =>
-    {
-        if (civilian.isAlive)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
+        // Rendering
+        if (player.isAlive)
         {
-            civilian.render();
+            player.render();
         }
-    })
-    clueArray.forEach(clue =>
-    {
-        if (clue.unobtained)
+        civArray.forEach(civilian =>
         {
-            clue.render();
-            if (checkHit(player, clue))    // Check after render if player walks over clue
+            if (civilian.isAlive)
             {
-                const pushClue = document.createElement("li");
-                pushClue.innerText = clue.info;
-                clueList.append(pushClue);
-                clue.unobtained = false;    // Ater the next gameUpdate "frame," the clue will no longer be rendered
-            }   
+                civilian.render();
+            }
+        })
+        clueArray.forEach(clue =>
+        {
+            if (clue.unobtained)
+            {
+                clue.render();
+                if (checkHit(player, clue))    // Check after render if player walks over clue
+                {
+                    const pushClue = document.createElement("li");
+                    pushClue.innerText = clue.info;
+                    clueList.append(pushClue);
+                    clue.unobtained = false;    // Ater the next gameUpdate "frame," the clue will no longer be rendered
+                }   
+            }
+        })
+        // Loss collision detection
+        if (checkHit(player, killer) && killer.isAlive)
+        {
+            player.isAlive = false;    // Kills player if they encouter the killer
+            gameOver("you died");
         }
-    })
-    if (checkHit(player, killer) && killer.isAlive)
-    {
-        player.isAlive = false;    // Kills player if they encouter the killer
-        gameOver("you died");
     }
 }
 
@@ -227,4 +251,7 @@ newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height -
 clueArray.push(newClue);
 newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
 clueArray.push(newClue);
-const gameUpdateInterval = setInterval(gameUpdate, 100);    // Start game with refresh rate of 1000/# frames per second
+
+let gameUpdateInterval = 0;    // Make sure interval is not defined in order to show instructions first
+// Interval is set later in playerInput() when a keyboard button is pressed
+howToPlay();    // Display objectives and controls on screen before rendering game
