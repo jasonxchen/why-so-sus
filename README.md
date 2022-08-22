@@ -36,6 +36,7 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 * Add more space when walking up, to the right, down, or to the left of the starting room
     * Alternative: add condition to "wrap to the other side"; i.e. walk past the bottom of the canvas and appear at the top
 * Accessibility mode: color blindness; make text with relevant colors layered on top of civilians (or on the list if implemented)
+* Better movement
 
 ## Tech Stack
 

@@ -1,5 +1,6 @@
 // VARIABLES
 const canvas = document.querySelector("canvas");
+const clueList = document.querySelector("#clue-list");
 const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 // Adjust canvas resolution based on screen resolution used
 canvas.setAttribute("height", getComputedStyle(canvas).height);
@@ -124,6 +125,19 @@ const playerInput = e =>
 }
 document.addEventListener("keydown", playerInput);
 
+const checkHit = (objOne, objTwo) =>
+{
+    // If objOne passes objTwo on objTwo's right, left, bottom, and top at the same time respectively
+    if (objOne.x <= objTwo.x + objTwo.width && objOne.x + objOne.width >= objTwo.x && objOne.y <= objTwo.y + objTwo.height && objOne.y + objOne.height >= objTwo.y)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 const gameUpdate = () =>
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
@@ -144,6 +158,13 @@ const gameUpdate = () =>
         if (clue.unobtained)
         {
             clue.render();
+            if (checkHit(player, clue))    // Check after render if player walks over clue
+            {
+                const pushClue = document.createElement("li");
+                pushClue.innerText = clue.info;
+                clueList.append(pushClue);
+                clue.unobtained = false;    // Ater the next gameUpdate "frame," the clue will no longer be rendered
+            }   
         }
     })
 }
