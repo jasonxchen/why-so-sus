@@ -135,6 +135,11 @@ canvas.addEventListener("click", e =>
         if (e.clientX - cRect.left <= civilian.x + civilian.width && e.clientX - cRect.left >= civilian.x && e.clientY - cRect.top <= civilian.y + civilian.height && e.clientY - cRect.top >= civilian.y)
         {
             civilian.isAlive = false;    // Assassinates NPC clicked
+            if (civilian.isKiller)
+            {
+                gameOver("you win");
+                clearInterval(gameUpdateInterval);
+            }
         }
     })
 })
