@@ -138,6 +138,16 @@ const checkHit = (objOne, objTwo) =>
     }
 }
 
+const gameOver = (message) =>
+{
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(canvas.width / 2 - 100, canvas.height / 2 - 55, 200, 100);    // Center black opaque blackground
+    ctx.font = "30px Comic Sans MS";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+}
+
 const gameUpdate = () =>
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
@@ -167,6 +177,11 @@ const gameUpdate = () =>
             }   
         }
     })
+    if (checkHit(player, killer))
+    {
+        player.isAlive = false;    // Kills player if they encouter the killer
+        gameOver("you died");
+    }
 }
 
 // TEMP
