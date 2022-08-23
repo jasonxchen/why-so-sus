@@ -174,7 +174,7 @@ canvas.addEventListener("click", e =>
     civArray.forEach(civilian =>
     {
         // If the point clicked is past NPC's right, left, bottom, and top at the same time respectively
-        if (e.clientX - cRect.left <= civilian.x + civilian.width && e.clientX - cRect.left >= civilian.x && e.clientY - cRect.top <= civilian.y + civilian.height && e.clientY - cRect.top >= civilian.y)
+        if (player.isAlive && e.clientX - cRect.left <= civilian.x + civilian.width && e.clientX - cRect.left >= civilian.x && e.clientY - cRect.top <= civilian.y + civilian.height && e.clientY - cRect.top >= civilian.y)
         {
             if (civilian.isKiller && killer.isAlive)
             {
