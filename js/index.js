@@ -79,14 +79,39 @@ class Clue    // Simple enough to extend from person; new super class for semant
 }
 
 // FUNCTIONS
-const randomNum = (min, max) =>
+const randomNum = (min, max) =>    // max not included in range
 {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 const randomMove = civilian =>
 {
     const step = 25;    // # pixel step at a time
-    const randomDir = moveArray[randomNum(0, moveArray.length)];
+    let randomDir = moveArray[randomNum(0, moveArray.length)];
+    if (civilian.isKiller && randomNum(0, 3) === 1)    // Killer has 33.33% chance of moving towards player
+    {
+        if (Math.abs(player.x - killer.x) >= Math.abs(player.y - killer.y))    // If killer is farther horizontally than vertically
+        {
+            if (player.x - killer.x > 0)    // If killer is to the left of player
+            {
+                randomDir = "right";    // Move right (towards player)
+            }
+            else
+            {
+                randomDir = "left";    // Move left (towards player)
+            }
+        }
+        else
+        {
+            if (player.y - killer.y > 0)    // If killer is above player
+            {
+                randomDir = "down";    // Move down
+            }
+            else
+            {
+                randomDir = "up";    // Move up
+            }
+        }
+    }
     switch (randomDir)
     {
         case "up":
