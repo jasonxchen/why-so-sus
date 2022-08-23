@@ -179,8 +179,9 @@ canvas.addEventListener("click", e =>
             if (civilian.isKiller && killer.isAlive)
             {
                 killer.isAlive = false;
+                gameUpdate();
                 gameOver("you win");
-                ctx.clearRect(killer.x, killer.y, killer.width, killer.height);
+                // ctx.clearRect(killer.x, killer.y, killer.width, killer.height);
                 clearInterval(gameUpdateInterval);
             }
             else
@@ -269,7 +270,7 @@ const gameUpdate = () =>
 
 // MORE VARIABLES
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
-const civInit = 7;    // How many NPCs to start out with
+const civInit = 17;    // How many NPCs to start out with
 const killerIndex = Math.floor(Math.random() * civInit);
 const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
 for (let i = 0; i < civInit; i++)
