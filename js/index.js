@@ -8,6 +8,7 @@ canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
 const colorArray = ["red", "lime", "blue", "black"];
 const clueArray = [];
+const keys = [false, false, false, false];    // Set WASD initial press to false
 
 class Person    // Super class for all moving game entities
 {
@@ -80,52 +81,91 @@ const randomNum = (min, max) =>
 {
     return Math.floor(Math.random() * (max - min)) + min;
 }
-const playerInput = e =>    // Keyboard controls
+const playerInput = () =>    // Keyboard controls
 {
-    const step = 50;    // # pixel step at a time
+    const step = 4;    // # pixel step at a time
     if (player.isAlive && killer.isAlive)    // Stops movement if either is killed
     {
         if (gameUpdateInterval === 0)
         {
-            gameUpdateInterval = setInterval(gameUpdate, 100);    // Start game with refresh rate of 1000/# frames per second on keyboard input
+            gameUpdateInterval = setInterval(gameUpdate, 20);    // Start game with refresh rate of 1000/# frames per second on keyboard input
             return;    // Does not factor in first keyboard input for player movement
         }
-        switch (e.key)
+        if (keys[0])
         {
-            case "w":
-                player.y -= step;    // Move player up
-                if (player.y < 0)
-                {
-                    player.y = 0;    // Prevent moving out of top of screen
-                }
-                break;
-            case "a":
-                player.x -= step;    // Move player left
-                if (player.x < 0)
-                {
-                    player.x = 0;    // Prevent moving out of left of screen
-                }
-                break;
-            case "s":
-                player.y += step;    // Move player down
-                if (player.y + player.height > canvas.height)
-                {
-                    player.y = canvas.height - player.height;        // Prevent moving out of bottom of screen
-                }
-                break;
-            case "d":
-                player.x += step;    // Move player right
-                if (player.x + player.width > canvas.width)
-                {
-                    player.x = canvas.width - player.width;        // Prevent moving out of right of screen
-                }
-                break;
-            default:
-                break;
+            player.y -= step;    // Move player up
+            if (player.y < 0)
+            {
+                player.y = 0;    // Prevent moving out of top of screen
+            }
+        }
+        if (keys[1])
+        {
+            player.x -= step;    // Move player left
+            if (player.x < 0)
+            {
+                player.x = 0;    // Prevent moving out of left of screen
+            }
+        }
+        if (keys[2])
+        {
+            player.y += step;    // Move player down
+            if (player.y + player.height > canvas.height)
+            {
+                player.y = canvas.height - player.height;        // Prevent moving out of bottom of screen
+            }
+        }
+        if (keys[3])
+        {
+            player.x += step;    // Move player right
+            if (player.x + player.width > canvas.width)
+            {
+                player.x = canvas.width - player.width;        // Prevent moving out of right of screen
+            }
         }
     }
 }
-document.addEventListener("keydown", playerInput);
+document.addEventListener("keydown", e =>
+{
+    playerInput();    // Call function in order to start game from instruction screen
+    switch (e.key)    // Have to use switch since keyCode is deprecated
+    {
+        case "w":
+            keys[0] = true;    // Is moving up with "W"
+            break;
+        case "a":
+            keys[1] = true;    // Is moving left with "A"
+            break;
+        case "s":
+            keys[2] = true;    // Is moving right with "S"
+            break;
+        case "d":
+            keys[3] = true;    // Is moving down with "D"
+            break;
+        default:
+            break;
+    }
+});
+document.addEventListener("keyup", e =>    // Cancel specific directional movement
+{
+    switch (e.key)
+    {
+        case "w":
+            keys[0] = false;
+            break;
+        case "a":
+            keys[1] = false;
+            break;
+        case "s":
+            keys[2] = false;
+            break;
+        case "d":
+            keys[3] = false;
+            break;
+        default:
+            break;
+    }
+});
 
 canvas.addEventListener("click", e =>
 {
@@ -218,6 +258,7 @@ const gameUpdate = () =>
             }   
         }
     })
+    playerInput();    // Make every gameUpdate factor in player input
     // Loss collision detection
     if (checkHit(player, killer) && killer.isAlive)
     {
