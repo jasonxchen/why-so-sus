@@ -7,8 +7,10 @@ canvas.setAttribute("height", getComputedStyle(canvas).height);
 canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
 const colorArray = ["red", "lime", "blue", "black"];
+const moveArray = ["up", "left", "down", "right"];
 const clueArray = [];
 const keys = [false, false, false, false];    // Set WASD initial press to false
+let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
 
 class Person    // Super class for all moving game entities
 {
@@ -81,6 +83,45 @@ const randomNum = (min, max) =>
 {
     return Math.floor(Math.random() * (max - min)) + min;
 }
+const randomMove = civilian =>
+{
+    const step = 25;    // # pixel step at a time
+    const randomDir = moveArray[randomNum(0, moveArray.length)];
+    switch (randomDir)
+    {
+        case "up":
+            civilian.y -= step;    // Move up
+            if (civilian.y < 0)
+            {
+                civilian.y = 0;    // Prevent moving out of top of screen
+            }
+            break;
+        case "left":
+            civilian.x -= step;    // Move left
+            if (civilian.x < 0)
+            {
+                civilian.x = 0;    // Prevent moving out of left of screen
+            }
+            break;
+        case "down":
+            civilian.y += step;    // Move down
+            if (civilian.y + civilian.height > canvas.height)
+            {
+                civilian.y = canvas.height - civilian.height;        // Prevent moving out of bottom of screen
+            }
+            break;
+        case "right":
+            civilian.x += step;    // Move right
+            if (civilian.x + civilian.width > canvas.width)
+            {
+                civilian.x = canvas.width - civilian.width;        // Prevent moving out of right of screen
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 const playerInput = () =>    // Keyboard controls
 {
     const step = 4;    // # pixel step at a time
@@ -232,6 +273,13 @@ const howToPlay = () =>
 const gameUpdate = () =>
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);    // Clear the canvas
+    // Loss collision detection
+    if (checkHit(player, killer) && killer.isAlive)
+    {
+        player.isAlive = false;    // Kills player if they encouter the killer
+        gameOver("you died");
+        clearInterval(gameUpdateInterval);
+    }
     // Rendering
     if (player.isAlive)
     {
@@ -242,6 +290,10 @@ const gameUpdate = () =>
         if (civilian.isAlive)
         {
             civilian.render();
+            if (frameNum % 25 === 0)    // Restricts movement to every # frames
+            {
+                randomMove(civilian);    // Random movement direction for next frame
+            }
         }
     })
     clueArray.forEach(clue =>
@@ -259,12 +311,7 @@ const gameUpdate = () =>
         }
     })
     playerInput();    // Make every gameUpdate factor in player input
-    // Loss collision detection
-    if (checkHit(player, killer) && killer.isAlive)
-    {
-        player.isAlive = false;    // Kills player if they encouter the killer
-        gameOver("you died");
-    }
+    frameNum++;
 }
 
 // MORE VARIABLES
