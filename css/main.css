@@ -11,10 +11,28 @@ body
     background-color: black;
 }
 
-/*h1, h2,*/.clue-container
+.clue-container
 {
-    /* font-family: ""; */
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    position: fixed;
+    top: 3em;
+    left: 1.5em;
     color: rgba(87, 72, 72, 1);
+    background-color: rgba(237, 224, 216, 1);
+    width: 11em;
+    height: 8.5em;
+}
+
+.clue-container p
+{
+    text-align: center;
+    margin: 5px auto 0;
+    font-weight: 900;
+}
+
+#clue-list
+{
+    margin: 5px auto;
 }
 
 #play-area
