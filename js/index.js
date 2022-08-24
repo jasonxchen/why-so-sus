@@ -5,13 +5,10 @@ const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 // Adjust canvas resolution based on screen resolution used
 canvas.setAttribute("height", getComputedStyle(canvas).height);
 canvas.setAttribute("width", getComputedStyle(canvas).width);
-const civArray = [];
 const colorArray = ["red", "lime", "blue", "black"];
 const moveArray = ["up", "left", "down", "right"];
 const laserArray = [0, 0, 0, 0];    // Initial power of lasers at top, left, bottom, and right set to 0 respectively
-const clueArray = [];
 const keys = [false, false, false, false, false, false, false, false];    // Set [W,A,S,D,I,J,K,L] initial press to false
-let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
 
 class Person    // Super class for all moving game entities
 {
@@ -359,7 +356,7 @@ document.addEventListener("keyup", e =>    // Cancel specific directional moveme
     }
 });
 
-canvas.addEventListener("click", e =>
+canvas.addEventListener("mousedown", e =>
 {
     // Adjust coordinates so that the top left pixel of canvas will return (0,0)
     const cRect = canvas.getBoundingClientRect();    // Get canvas pos, width, and height
@@ -448,21 +445,6 @@ const gameUpdate = () =>
         clearInterval(gameUpdateInterval);    // Clears at the beginning to make sure correct NPCs render for last frame
     }
     // Rendering
-    if (player.isAlive)
-    {
-        player.render();
-    }
-    civArray.forEach(civilian =>
-    {
-        if (civilian.isAlive)
-        {
-            civilian.render();
-            if (frameNum % 25 === 0)    // Restricts movement to every # frames
-            {
-                randomMove(civilian);    // Random movement direction for next frame
-            }
-        }
-    })
     clueArray.forEach(clue =>
     {
         if (clue.unobtained)
@@ -477,6 +459,21 @@ const gameUpdate = () =>
             }   
         }
     })
+    if (player.isAlive)
+    {
+        player.render();
+    }
+    civArray.forEach(civilian =>
+    {
+        if (civilian.isAlive)
+        {
+            if (frameNum % 25 === 0 && frameNum !== 0)    // Restricts movement to every # frames except the first
+            {
+                randomMove(civilian);    // Random movement direction
+            }
+            civilian.render();
+        }
+    })
     playerInput();    // Make every gameUpdate factor in player input
     if (checkHit(player, killer) && killer.isAlive)
     {
@@ -486,6 +483,9 @@ const gameUpdate = () =>
 }
 
 // MORE VARIABLES
+let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
+const civArray = [];
+const clueArray = [];
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
 const civInit = 7;    // How many NPCs to start out with
 const killerIndex = Math.floor(Math.random() * civInit);
