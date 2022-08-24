@@ -32,10 +32,10 @@ class Civilian extends Person
     {
         super(xPos, yPos, width, height);
         this.isKiller = false;
-        this.hatColor = colorArray[randomNum(0, colorArray.length)]    // Hat color
-        this.shirtColor = colorArray[randomNum(0, colorArray.length)]    // Shirt color
-        this.pantsColor = colorArray[randomNum(0, colorArray.length)]    // Pants color
-        this.shoeColor = colorArray[randomNum(0, colorArray.length)]    // Shoe color
+        this.hatColor = colorArray[randomNum(0, colorArray.length)];      // Hat color
+        this.shirtColor = colorArray[randomNum(0, colorArray.length)];    // Shirt color
+        this.pantsColor = colorArray[randomNum(0, colorArray.length)];    // Pants color
+        this.shoeColor = colorArray[randomNum(0, colorArray.length)];     // Shoe color
     }
     render = () =>
     {
@@ -402,7 +402,6 @@ const checkIfWin = civilian =>
         killer.isAlive = false;
         gameUpdate();
         gameOver("you win");
-        clearInterval(gameUpdateInterval);
     }
     else
     {
@@ -411,12 +410,22 @@ const checkIfWin = civilian =>
 }
 const gameOver = (message) =>
 {
+    clearInterval(gameUpdateInterval);    // Stops game from updating
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
     ctx.fillRect(canvas.width / 2 - 100, canvas.height / 2 - 55, 200, 100);    // Center black opaque blackground
     ctx.font = "30px Comic Sans MS";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+    const replay = e =>    // Define replay event
+    {
+        if (e.key === " ")
+        {
+            resetGame();    // Calls function to reset game state
+            document.removeEventListener("keydown", replay);    // Remove event listener so it only registers here and once
+        }
+    }
+    document.addEventListener("keydown", replay);    // On key press, call replay function
 }
 
 const howToPlay = () =>
@@ -442,7 +451,6 @@ const gameUpdate = () =>
     if (checkHit(player, killer) && killer.isAlive)
     {
         player.isAlive = false;    // Kills player if they encouter the killer
-        clearInterval(gameUpdateInterval);    // Clears at the beginning to make sure correct NPCs render for last frame
     }
     // Rendering
     clueArray.forEach(clue =>
@@ -475,22 +483,22 @@ const gameUpdate = () =>
         }
     })
     playerInput();    // Make every gameUpdate factor in player input
-    if (checkHit(player, killer) && killer.isAlive)
+    if (!player.isAlive)
     {
         gameOver("you died");    // Displays at the end so that game over message won't be blocked
     }
     frameNum++;
 }
 
-// MORE VARIABLES
+// STARTING VARIABLES
 let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
 const civArray = [];
 const clueArray = [];
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
 const civInit = 7;    // How many NPCs to start out with
-const killerIndex = Math.floor(Math.random() * civInit);
+let killerIndex = Math.floor(Math.random() * civInit);
 const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
-for (let i = 0; i < civInit; i++)
+for (let i = 0; i < civInit; i++)    // Fill array with NPCs
 {
     if (i === killerIndex)    // Make this random NPC the killer
     {
@@ -516,3 +524,50 @@ clueArray.push(newClue);
 let gameUpdateInterval = 0;    // Make sure interval is not defined in order to show instructions first
 // Interval is set later in playerInput() when a keyboard button is pressed
 howToPlay();    // Display objectives and controls on screen before rendering game
+
+const resetGame = () =>    // Frontend and backend reset of game variables
+{
+    while (clueList.firstChild)    // Clears clue list
+    {
+        clueList.removeChild(clueList.firstChild);
+    }
+    frameNum = 0;
+    // Bring player back to life and reset position
+    player.x = canvas.width / 2 - 12.5;
+    player.y = canvas.height / 2 - 25;
+    player.isAlive = true;
+    // Bring killer back to life with new position and colors
+    killer.x = randomNum(0, canvas.width - 25);
+    killer.y = randomNum(0, canvas.height - 50);
+    killer.isAlive = true;
+    killer.hatColor = colorArray[randomNum(0, colorArray.length)];
+    killer.shirtColor = colorArray[randomNum(0, colorArray.length)];
+    killer.pantsColor = colorArray[randomNum(0, colorArray.length)];
+    killer.shoeColor = colorArray[randomNum(0, colorArray.length)];
+    killerIndex = Math.floor(Math.random() * civInit);    // New killer index for more randomness
+    civArray.length = 0;    // Reset array of NPCs
+    // Fill array with new NPCs
+    for (let i = 0; i < civInit; i++)
+    {
+        if (i === killerIndex)    // Make this random NPC the killer
+        {
+            civArray.push(killer);
+        }
+        else
+        {
+            // 25px and 50px for max in random num gen to allow space for object model
+            const newCiv = new Civilian(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
+            civArray.push(newCiv);
+        }
+    }
+    clueArray.length = 0;    // Reset array of clues
+    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Hat color: ${killer.hatColor}`);
+    clueArray.push(newClue);
+    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shirt color: ${killer.shirtColor}`);
+    clueArray.push(newClue);
+    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Pants color: ${killer.pantsColor}`);
+    clueArray.push(newClue);
+    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
+    clueArray.push(newClue);
+    gameUpdateInterval = setInterval(gameUpdate, 20);    // Refreshes board and restarts game ticking
+}
