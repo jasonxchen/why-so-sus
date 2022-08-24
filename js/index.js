@@ -8,7 +8,7 @@ canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
 const colorArray = ["red", "lime", "blue", "black"];
 const moveArray = ["up", "left", "down", "right"];
-const laserArray = ["up", "left", "down", "right"];
+const laserArray = [0, 0, 0, 0];    // Initial power of lasers at top, left, bottom, and right set to 0 respectively
 const clueArray = [];
 const keys = [false, false, false, false, false, false, false, false];    // Set [W,A,S,D,I,J,K,L] initial press to false
 let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
@@ -201,11 +201,20 @@ const playerInput = () =>    // Keyboard controls
         // Visually display lasers (actual hit detection in gameUpdate)
         if (keys[4])
         {
+            let width = 2;    // Initial laser width
+            if (laserArray[0] >= 5 && laserArray[0] < 16)    // Check power in laserArray
+            {
+                width += 4;
+            }
+            else if (laserArray[0] >= 16)
+            {
+                width += 12;
+            }
             ctx.fillStyle = "aqua";
-            ctx.fillRect(player.x + player.width / 2 - 1, 0, 2, player.y);    // Visual laser up
+            ctx.fillRect(player.x + player.width / 2 - width / 2, 0, width, player.y);    // Visual laser up
             civArray.forEach(civilian =>
             {
-                if (checkLaserHit(player.x + player.width / 2 - 0.5, 0, 2, player.y, civilian))    // If laser hits anyone
+                if (checkLaserHit(player.x + player.width / 2 - width / 2, 0, width, player.y, civilian))    // If laser hits anyone
                 {
                     checkIfWin(civilian);
                 }
@@ -213,11 +222,20 @@ const playerInput = () =>    // Keyboard controls
         }
         if (keys[5])
         {
+            let height = 2;
+            if (laserArray[1] >= 5 && laserArray[1] < 16)
+            {
+                height += 4;
+            }
+            else if (laserArray[1] >= 16)
+            {
+                height += 12;
+            }
             ctx.fillStyle = "aqua";
-            ctx.fillRect(0, player.y + player.height / 2 - 1, player.x, 2);    // Visual laser left
+            ctx.fillRect(0, player.y + player.height / 2 - height / 2, player.x, height);    // Visual laser left
             civArray.forEach(civilian =>
             {
-                if (checkLaserHit(0, player.y + player.height / 2 - 0.5, player.x, 2, civilian))
+                if (checkLaserHit(0, player.y + player.height / 2 - height / 2, player.x, height, civilian))
                 {
                     checkIfWin(civilian);
                 }
@@ -225,11 +243,20 @@ const playerInput = () =>    // Keyboard controls
         }
         if (keys[6])
         {
+            let width = 2;
+            if (laserArray[2] >= 5 && laserArray[2] < 16)
+            {
+                width += 4;
+            }
+            else if (laserArray[2] >= 16)
+            {
+                width += 12;
+            }
             ctx.fillStyle = "aqua";
-            ctx.fillRect(player.x + player.width / 2 - 1, player.y + player.height, 2, canvas.height - player.y - player.height);    // Visual laser down
+            ctx.fillRect(player.x + player.width / 2 - width / 2, player.y + player.height, width, canvas.height - player.y - player.height);    // Visual laser down
             civArray.forEach(civilian =>
             {
-                if (checkLaserHit(player.x + player.width / 2 - 1, player.y + player.height, 2, canvas.height - player.y - player.height, civilian))
+                if (checkLaserHit(player.x + player.width / 2 - width / 2, player.y + player.height, width, canvas.height - player.y - player.height, civilian))
                 {
                     checkIfWin(civilian);
                 }
@@ -237,11 +264,20 @@ const playerInput = () =>    // Keyboard controls
         }
         if (keys[7])
         {
+            let height = 2;
+            if (laserArray[3] >= 5 && laserArray[3] < 16)
+            {
+                height += 4;
+            }
+            else if (laserArray[3] >= 16)
+            {
+                height += 12;
+            }
             ctx.fillStyle = "aqua";
-            ctx.fillRect(player.x + player.width, player.y + player.height / 2 - 0.5, canvas.width - player.x - player.width, 2);    // Visual laser right
+            ctx.fillRect(player.x + player.width, player.y + player.height / 2 - height / 2, canvas.width - player.x - player.width, height);    // Visual laser right
             civArray.forEach(civilian =>
             {
-                if (checkLaserHit(player.x + player.width, player.y + player.height / 2 - 0.5, canvas.width - player.x - player.width, 2, civilian))
+                if (checkLaserHit(player.x + player.width, player.y + player.height / 2 - height / 2, canvas.width - player.x - player.width, height, civilian))
                 {
                     checkIfWin(civilian);
                 }
@@ -267,16 +303,20 @@ document.addEventListener("keydown", e =>
             keys[3] = true;    // Is moving down with "D"
             break;
         case "i":
-            keys[4] = true;    // Top laser firing with "I"
+            keys[4] = true;     // Top laser firing with "I"
+            laserArray[0]++;    // Increase laser power
             break;
         case "j":
             keys[5] = true;    // Left laser firing with "J"
+            laserArray[1]++;
             break;
         case "k":
             keys[6] = true;    // Bottom laser firing with "K"
+            laserArray[2]++;
             break;
         case "l":
             keys[7] = true;    // Right laser firing with "L"
+            laserArray[3]++;
             break;
         default:
             break;
@@ -300,15 +340,19 @@ document.addEventListener("keyup", e =>    // Cancel specific directional moveme
             break;
         case "i":
             keys[4] = false;
+            laserArray[0] = 0;    // Reset laser power
             break;
         case "j":
             keys[5] = false;
+            laserArray[1] = 0;
             break;
         case "k":
             keys[6] = false;
+            laserArray[2] = 0;
             break;
         case "l":
             keys[7] = false;
+            laserArray[3] = 0;
             break;
         default:
             break;
@@ -388,7 +432,7 @@ const howToPlay = () =>
     ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 150);
     ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 80);
     ctx.fillText("2. Left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 30);
-    ctx.fillText("...or use IJKL for lazoooor", canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 + 20);
     ctx.fillText("3. Use WASD to move", canvas.width / 2, canvas.height / 2 + 70);
     ctx.fillText("4. Avoid the killer or else it's game over", canvas.width / 2, canvas.height / 2 + 120);
     ctx.fillText("5. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 170);
