@@ -45,8 +45,8 @@ class Civilian extends Person
         // Default height: 50px (5px hat 8px face 19px shirt, 15px pants, 3px shoes)
         ctx.fillStyle = this.hatColor;    // Start hat
         ctx.beginPath();
-        ctx.moveTo(this.x + 7, this.y + 4);
-        ctx.bezierCurveTo(this.x + 9, this.y, this.x + 15, this.y, this.x + 17, this.y + 4);
+        ctx.moveTo(this.x + 7, this.y + 5);
+        ctx.bezierCurveTo(this.x + 9, this.y, this.x + 16, this.y, this.x + 18, this.y + 5);
         ctx.fill();    // Finish hat
         ctx.fillStyle = "yellow";    // Face color
         ctx.fillRect(this.x + 6, this.y + 5, 13, 8);    // Face shape
@@ -310,8 +310,7 @@ const gameUpdate = () =>
     if (checkHit(player, killer) && killer.isAlive)
     {
         player.isAlive = false;    // Kills player if they encouter the killer
-        gameOver("you died");
-        clearInterval(gameUpdateInterval);
+        clearInterval(gameUpdateInterval);    // Clears at the beginning to make sure correct NPCs render for last frame
     }
     // Rendering
     if (player.isAlive)
@@ -344,6 +343,10 @@ const gameUpdate = () =>
         }
     })
     playerInput();    // Make every gameUpdate factor in player input
+    if (checkHit(player, killer) && killer.isAlive)
+    {
+        gameOver("you died");    // Displays at the end so that game over message won't be blocked
+    }
     frameNum++;
 }
 
