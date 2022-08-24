@@ -41,15 +41,23 @@ class Civilian extends Person
     }
     render = () =>
     {
-        // Default height: 50px (5px hat 20px shirt, 20px pants, 5px shoes)
-        ctx.fillStyle = this.hatColor;
-        ctx.fillRect(this.x, this.y, this.width, 5);
+        // WIP NPC model
+        // Default height: 50px (5px hat 8px face 19px shirt, 15px pants, 3px shoes)
+        ctx.fillStyle = this.hatColor;    // Start hat
+        ctx.beginPath();
+        ctx.moveTo(this.x + 7, this.y + 4);
+        ctx.bezierCurveTo(this.x + 9, this.y, this.x + 15, this.y, this.x + 17, this.y + 4);
+        ctx.fill();    // Finish hat
+        ctx.fillStyle = "yellow";    // Face color
+        ctx.fillRect(this.x + 6, this.y + 5, 13, 8);    // Face shape
         ctx.fillStyle = this.shirtColor;
-        ctx.fillRect(this.x, this.y + 5, this.width, 20);
+        ctx.fillRect(this.x, this.y + 13, this.width, 19);
         ctx.fillStyle = this.pantsColor;
-        ctx.fillRect(this.x, this.y + 25, this.width, 20);
+        ctx.fillRect(this.x + 6, this.y + 32, 5, 15);    // Left leg
+        ctx.fillRect(this.x + 14, this.y + 32, 5, 15);    // Right leg
         ctx.fillStyle = this.shoeColor;
-        ctx.fillRect(this.x, this.y + 45, this.width, 5);
+        ctx.fillRect(this.x + 4, this.y + 47, 7, 3);    // Left shoe
+        ctx.fillRect(this.x + 14, this.y + 47, 7, 3);    // Right shoe
     }
 }
 class Killer extends Civilian
