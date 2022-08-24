@@ -202,7 +202,7 @@ const playerInput = () =>    // Keyboard controls
         if (keys[4])
         {
             ctx.fillStyle = "aqua";
-            ctx.fillRect(player.x + player.width / 2 - 0.5, 0, 2, player.y);    // Visual laser up
+            ctx.fillRect(player.x + player.width / 2 - 1, 0, 2, player.y);    // Visual laser up
             civArray.forEach(civilian =>
             {
                 if (checkLaserHit(player.x + player.width / 2 - 0.5, 0, 2, player.y, civilian))    // If laser hits anyone
@@ -214,7 +214,7 @@ const playerInput = () =>    // Keyboard controls
         if (keys[5])
         {
             ctx.fillStyle = "aqua";
-            ctx.fillRect(0, player.y + player.height / 2 - 0.5, player.x, 2);    // Visual laser left
+            ctx.fillRect(0, player.y + player.height / 2 - 1, player.x, 2);    // Visual laser left
             civArray.forEach(civilian =>
             {
                 if (checkLaserHit(0, player.y + player.height / 2 - 0.5, player.x, 2, civilian))
@@ -226,10 +226,10 @@ const playerInput = () =>    // Keyboard controls
         if (keys[6])
         {
             ctx.fillStyle = "aqua";
-            ctx.fillRect(player.x + player.width / 2 - 0.5, player.y + player.height, 2, canvas.height - player.y - player.height);    // Visual laser down
+            ctx.fillRect(player.x + player.width / 2 - 1, player.y + player.height, 2, canvas.height - player.y - player.height);    // Visual laser down
             civArray.forEach(civilian =>
             {
-                if (checkLaserHit(player.x + player.width / 2 - 0.5, player.y + player.height, 2, canvas.height - player.y - player.height, civilian))
+                if (checkLaserHit(player.x + player.width / 2 - 1, player.y + player.height, 2, canvas.height - player.y - player.height, civilian))
                 {
                     checkIfWin(civilian);
                 }
