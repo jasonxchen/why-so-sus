@@ -401,22 +401,24 @@ const checkIfWin = civilian =>
     {
         killer.isAlive = false;
         gameUpdate();
-        gameOver("you win");
+        gameOver("🏆 You Win 🏆", "Target Eliminated");
     }
     else
     {
         civilian.isAlive = false;    // Assassinates NPC
     }
 }
-const gameOver = (message) =>
+const gameOver = (outcome, reason) =>
 {
     clearInterval(gameUpdateInterval);    // Stops game from updating
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(canvas.width / 2 - 100, canvas.height / 2 - 55, 200, 100);    // Center black opaque blackground
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.fillRect(canvas.width / 2 - 225, canvas.height / 2 - 110, 450, 200);    // Center black opaque blackground
     ctx.font = "30px Comic Sans MS";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText(message, canvas.width / 2, canvas.height / 2);
+    ctx.fillText(outcome, canvas.width / 2, canvas.height / 2 - 60);
+    ctx.fillText(reason, canvas.width / 2, canvas.height / 2 - 10);
+    ctx.fillText("Press [Space] to play again", canvas.width / 2, canvas.height / 2 + 50);
     const replay = e =>    // Define replay event
     {
         if (e.key === " ")
@@ -430,7 +432,7 @@ const gameOver = (message) =>
 
 const howToPlay = () =>
 {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
     ctx.fillRect(50, 50, canvas.width - 100, canvas.height - 100);
     ctx.font = "30px Comic Sans MS";
     ctx.fillStyle = "white";
@@ -485,7 +487,7 @@ const gameUpdate = () =>
     playerInput();    // Make every gameUpdate factor in player input
     if (!player.isAlive)
     {
-        gameOver("you died");    // Displays at the end so that game over message won't be blocked
+        gameOver("🪦 You Died 🪦", "Killer Encountered");    // Displays at the end so that game over message won't be blocked
     }
     frameNum++;
 }
