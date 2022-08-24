@@ -388,9 +388,10 @@ const howToPlay = () =>
     ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 150);
     ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 80);
     ctx.fillText("2. Left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 30);
-    ctx.fillText("3. Avoid the killer or else you lose", canvas.width / 2, canvas.height / 2 + 20);
-    ctx.fillText("4. Use WASD to move", canvas.width / 2, canvas.height / 2 + 70);
-    ctx.fillText("5. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 120);
+    ctx.fillText("...or use IJKL for lazoooor", canvas.width / 2, canvas.height / 2 + 20);
+    ctx.fillText("3. Use WASD to move", canvas.width / 2, canvas.height / 2 + 70);
+    ctx.fillText("4. Avoid the killer or else it's game over", canvas.width / 2, canvas.height / 2 + 120);
+    ctx.fillText("5. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 170);
 }
 
 const gameUpdate = () =>
