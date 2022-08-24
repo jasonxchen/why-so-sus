@@ -8,8 +8,9 @@ canvas.setAttribute("width", getComputedStyle(canvas).width);
 const civArray = [];
 const colorArray = ["red", "lime", "blue", "black"];
 const moveArray = ["up", "left", "down", "right"];
+const laserArray = ["up", "left", "down", "right"];
 const clueArray = [];
-const keys = [false, false, false, false];    // Set WASD initial press to false
+const keys = [false, false, false, false, false, false, false, false];    // Set [W,A,S,D,I,J,K,L] initial press to false
 let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
 
 class Person    // Super class for all moving game entities
@@ -197,6 +198,55 @@ const playerInput = () =>    // Keyboard controls
                 player.x = canvas.width - player.width;        // Prevent moving out of right of screen
             }
         }
+        // Visually display lasers (actual hit detection in gameUpdate)
+        if (keys[4])
+        {
+            ctx.fillStyle = "aqua";
+            ctx.fillRect(player.x + player.width / 2 - 0.5, 0, 2, player.y);    // Visual laser up
+            civArray.forEach(civilian =>
+            {
+                if (checkLaserHit(player.x + player.width / 2 - 0.5, 0, 2, player.y, civilian))    // If laser hits anyone
+                {
+                    checkIfWin(civilian);
+                }
+            })
+        }
+        if (keys[5])
+        {
+            ctx.fillStyle = "aqua";
+            ctx.fillRect(0, player.y + player.height / 2 - 0.5, player.x, 2);    // Visual laser left
+            civArray.forEach(civilian =>
+            {
+                if (checkLaserHit(0, player.y + player.height / 2 - 0.5, player.x, 2, civilian))
+                {
+                    checkIfWin(civilian);
+                }
+            })
+        }
+        if (keys[6])
+        {
+            ctx.fillStyle = "aqua";
+            ctx.fillRect(player.x + player.width / 2 - 0.5, player.y + player.height, 2, canvas.height - player.y - player.height);    // Visual laser down
+            civArray.forEach(civilian =>
+            {
+                if (checkLaserHit(player.x + player.width / 2 - 0.5, player.y + player.height, 2, canvas.height - player.y - player.height, civilian))
+                {
+                    checkIfWin(civilian);
+                }
+            })
+        }
+        if (keys[7])
+        {
+            ctx.fillStyle = "aqua";
+            ctx.fillRect(player.x + player.width, player.y + player.height / 2 - 0.5, canvas.width - player.x - player.width, 2);    // Visual laser right
+            civArray.forEach(civilian =>
+            {
+                if (checkLaserHit(player.x + player.width, player.y + player.height / 2 - 0.5, canvas.width - player.x - player.width, 2, civilian))
+                {
+                    checkIfWin(civilian);
+                }
+            })
+        }
     }
 }
 document.addEventListener("keydown", e =>
@@ -216,11 +266,23 @@ document.addEventListener("keydown", e =>
         case "d":
             keys[3] = true;    // Is moving down with "D"
             break;
+        case "i":
+            keys[4] = true;    // Top laser firing with "I"
+            break;
+        case "j":
+            keys[5] = true;    // Left laser firing with "J"
+            break;
+        case "k":
+            keys[6] = true;    // Bottom laser firing with "K"
+            break;
+        case "l":
+            keys[7] = true;    // Right laser firing with "L"
+            break;
         default:
             break;
     }
 });
-document.addEventListener("keyup", e =>    // Cancel specific directional movement
+document.addEventListener("keyup", e =>    // Cancel specific directional movement and/or laser
 {
     switch (e.key)
     {
@@ -236,6 +298,18 @@ document.addEventListener("keyup", e =>    // Cancel specific directional moveme
         case "d":
             keys[3] = false;
             break;
+        case "i":
+            keys[4] = false;
+            break;
+        case "j":
+            keys[5] = false;
+            break;
+        case "k":
+            keys[6] = false;
+            break;
+        case "l":
+            keys[7] = false;
+            break;
         default:
             break;
     }
@@ -250,17 +324,7 @@ canvas.addEventListener("click", e =>
         // If the point clicked is past NPC's right, left, bottom, and top at the same time respectively
         if (player.isAlive && e.clientX - cRect.left <= civilian.x + civilian.width && e.clientX - cRect.left >= civilian.x && e.clientY - cRect.top <= civilian.y + civilian.height && e.clientY - cRect.top >= civilian.y)
         {
-            if (civilian.isKiller && killer.isAlive)
-            {
-                killer.isAlive = false;
-                gameUpdate();
-                gameOver("you win");
-                clearInterval(gameUpdateInterval);
-            }
-            else
-            {
-                civilian.isAlive = false;    // Assassinates NPC clicked
-            }
+            checkIfWin(civilian);
         }
     })
 })
@@ -277,7 +341,33 @@ const checkHit = (objOne, objTwo) =>
         return false;
     }
 }
+const checkLaserHit = (xPos, yPos, width, height, objTwo) =>
+{
+    // Repurposed checkHit to compare using laser x-coordinate, y-coordinate, width, and height
+    if (xPos <= objTwo.x + objTwo.width && xPos + width >= objTwo.x && yPos <= objTwo.y + objTwo.height && yPos + height >= objTwo.y)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
+const checkIfWin = civilian =>
+{
+    if (civilian.isKiller && killer.isAlive)
+    {
+        killer.isAlive = false;
+        gameUpdate();
+        gameOver("you win");
+        clearInterval(gameUpdateInterval);
+    }
+    else
+    {
+        civilian.isAlive = false;    // Assassinates NPC
+    }
+}
 const gameOver = (message) =>
 {
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
