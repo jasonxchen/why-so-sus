@@ -115,7 +115,7 @@ const randomMove = civilian =>
 {
     const step = 25;    // # pixel step at a time
     let randomDir = moveArray[randomNum(0, moveArray.length)];
-    if (civilian.isKiller && randomNum(0, 3) === 1)    // Killer has 33.33% chance of moving towards player
+    if (civilian.isKiller && randomNum(0, 3) === 1)    // Killer has 33.33%(+25% random) chance of moving towards player (can adjust for difficulty)
     {
         if (Math.abs(player.x - killer.x) >= Math.abs(player.y - killer.y))    // If killer is farther horizontally than vertically
         {
@@ -537,7 +537,7 @@ let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by
 const civArray = [];
 const clueArray = [];
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
-const civInit = 7;    // How many NPCs to start out with
+const civInit = 63;    // How many NPCs to start out with
 let killerIndex = Math.floor(Math.random() * civInit);
 const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
 for (let i = 0; i < civInit; i++)    // Fill array with NPCs
