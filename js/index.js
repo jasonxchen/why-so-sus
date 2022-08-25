@@ -20,10 +20,11 @@ class Person    // Super class for all moving game entities
         this.height = height;
         this.isAlive = true;
     }
-    render = () =>
+    render = () =>    // Render function for player
     {
-        ctx.fillStyle = "hotpink";    // Default hotpink render
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        const img = new Image();
+        img.src = "./img/player.png";
+        ctx.drawImage(img, this.x, this.y);
     }
 }
 class Civilian extends Person
