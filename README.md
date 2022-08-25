@@ -1,6 +1,6 @@
 # Why So Sus?
 
-Single-player javascript game influenced by Among Us
+Single-player JavaScript game with influence from Among Us
 
 ## Overview
 
