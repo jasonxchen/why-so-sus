@@ -3,7 +3,7 @@ const canvas = document.querySelector("canvas");
 const clueList = document.querySelector("#clue-list");
 const scoreNum = document.querySelector(".score-number");
 const timer = document.querySelector("#timer");
-const timeLimit = 60;    // Total seconds given for earning points
+const timeLimit = 120;    // Total seconds given for earning points
 let timePassed = 0;
 let timeLeft = timeLimit;
 let timerInterval = null;
@@ -183,8 +183,8 @@ const playerInput = () =>    // Keyboard controls
         if (gameUpdateInterval === 0)    // Only runs the one time after dismissing game instructions
         {
             gameUpdateInterval = setInterval(gameUpdate, 20);    // Start game with refresh rate of 1000/# frames per second on keyboard input
-            timer.innerText = timeLeft;    // Display 60 seconds left initially
-            startTimer();    // Start 60s timer
+            timer.innerText = timeLeft;    // Display time remaining first
+            startTimer();    // Start timer
             return;    // Does not factor in first keyboard input for player movement
         }
         if (keys[0])
@@ -475,7 +475,7 @@ const howToPlay = () =>
     ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 - 35);
     ctx.fillText("3. Lose points on killiing an innocent and gain points on a win", canvas.width / 2, canvas.height / 2 + 15);
     ctx.fillText("4. Avoid the killer or else it's game over and you lose points", canvas.width / 2, canvas.height / 2 + 65);
-    ctx.fillText("5. Points only count in the first 60 seconds", canvas.width / 2, canvas.height / 2 + 115);
+    ctx.fillText("5. Points only count within the time limit at the top", canvas.width / 2, canvas.height / 2 + 115);
     ctx.fillText("6. Use WASD to move", canvas.width / 2, canvas.height / 2 + 165);
     ctx.fillText("7. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 215);
 }
