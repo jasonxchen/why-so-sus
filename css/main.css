@@ -35,6 +35,18 @@ body
     margin: 5px auto;
 }
 
+.score-container
+{
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    position: fixed;
+    top: 3em;
+    right: 1.5em;
+    color: rgba(87, 72, 72, 1);
+    background-color: rgba(237, 224, 216, 1);
+    width: 11em;
+    text-align: center;
+}
+
 #play-area
 {
     margin: 0 auto;

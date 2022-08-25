@@ -1,6 +1,7 @@
 // VARIABLES
 const canvas = document.querySelector("canvas");
 const clueList = document.querySelector("#clue-list");
+const scoreNum = document.querySelector(".score-number");
 const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 // Adjust canvas resolution based on screen resolution used
 canvas.setAttribute("height", getComputedStyle(canvas).height);
@@ -401,12 +402,14 @@ const checkIfWin = civilian =>
 {
     if (civilian.isKiller && killer.isAlive)
     {
+        score += 2500;    // Gain 2500 points for correct elimination
         killer.isAlive = false;
         gameUpdate();
         gameOver("🏆 You Win 🏆", "Target Eliminated");
     }
-    else
+    else if (civilian.isAlive)
     {
+        score -= 100;    // Lose 100 points for every incorrect elimination
         civilian.isAlive = false;    // Assassinates NPC
     }
 }
@@ -454,6 +457,7 @@ const gameUpdate = () =>
     // Loss collision detection
     if (checkHit(player, killer) && killer.isAlive)
     {
+        score -= 1000;    // Lose 1000 points for every player death;
         player.isAlive = false;    // Kills player if they encouter the killer
     }
     // Rendering
@@ -491,10 +495,12 @@ const gameUpdate = () =>
     {
         gameOver("🪦 You Died 🪦", "Killer Encountered");    // Displays at the end so that game over message won't be blocked
     }
+    scoreNum.innerHTML = score;
     frameNum++;
 }
 
 // STARTING VARIABLES
+let score = 0;
 let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by limiting randomMove function call
 const civArray = [];
 const clueArray = [];
@@ -535,6 +541,8 @@ const resetGame = () =>    // Frontend and backend reset of game variables
     {
         clueList.removeChild(clueList.firstChild);
     }
+//    scoreNum.innerText = "0";    // Optional: reset score every replay
+//    score = 0;    // Optional: reset score every replay
     frameNum = 0;
     // Bring player back to life and reset position
     player.x = canvas.width / 2 - 12.5;
