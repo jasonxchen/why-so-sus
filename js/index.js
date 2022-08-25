@@ -442,13 +442,14 @@ const howToPlay = () =>
     ctx.font = "30px Comic Sans MS";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 150);
-    ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 80);
-    ctx.fillText("2. Left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 30);
-    ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 + 20);
-    ctx.fillText("3. Use WASD to move", canvas.width / 2, canvas.height / 2 + 70);
-    ctx.fillText("4. Avoid the killer or else it's game over", canvas.width / 2, canvas.height / 2 + 120);
-    ctx.fillText("5. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 170);
+    ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 170);
+    ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 110);
+    ctx.fillText("2. To win, left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 60);
+    ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 - 10);
+    ctx.fillText("3. Lose points on killiing an innocent and gain points on a win", canvas.width / 2, canvas.height / 2 + 40);
+    ctx.fillText("4. Avoid the killer or else it's game over and you lose points", canvas.width / 2, canvas.height / 2 + 90);
+    ctx.fillText("5. Use WASD to move", canvas.width / 2, canvas.height / 2 + 140);
+    ctx.fillText("6. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 190);
 }
 
 const gameUpdate = () =>
