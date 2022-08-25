@@ -79,8 +79,9 @@ class Clue    // Simple enough to extend from person; new super class for semant
     }
     render = () =>
     {
-        ctx.fillStyle = "rgba(237, 224, 216, 1)";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        const img = new Image();
+        img.src = "./img/clue.png";
+        ctx.drawImage(img, this.x, this.y);
     }
 }
 
