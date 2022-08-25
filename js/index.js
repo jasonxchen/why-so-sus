@@ -2,6 +2,11 @@
 const canvas = document.querySelector("canvas");
 const clueList = document.querySelector("#clue-list");
 const scoreNum = document.querySelector(".score-number");
+const timer = document.querySelector("#timer");
+const timeLimit = 60;    // Total seconds given for earning points
+let timePassed = 0;
+let timeLeft = timeLimit;
+let timerInterval = null;
 const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 // Adjust canvas resolution based on screen resolution used
 canvas.setAttribute("height", getComputedStyle(canvas).height);
@@ -88,6 +93,20 @@ class Clue    // Simple enough to extend from person; new super class for semant
 }
 
 // FUNCTIONS
+const startTimer = () =>
+{
+    timerInterval = setInterval(() =>
+    {
+        timePassed++;
+        timeLeft = timeLimit - timePassed;
+        timer.innerText = timeLeft;
+        if (timeLeft === 0)
+        {
+            clearInterval(timerInterval);
+        }
+    }, 1000)
+}
+
 const randomNum = (min, max) =>    // max not included in range
 {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -161,9 +180,11 @@ const playerInput = () =>    // Keyboard controls
     const step = 4;    // # pixel step at a time
     if (player.isAlive && killer.isAlive)    // Stops movement if either is killed
     {
-        if (gameUpdateInterval === 0)
+        if (gameUpdateInterval === 0)    // Only runs the one time after dismissing game instructions
         {
             gameUpdateInterval = setInterval(gameUpdate, 20);    // Start game with refresh rate of 1000/# frames per second on keyboard input
+            timer.innerText = timeLeft;    // Display 60 seconds left initially
+            startTimer();    // Start 60s timer
             return;    // Does not factor in first keyboard input for player movement
         }
         if (keys[0])
@@ -402,14 +423,20 @@ const checkIfWin = civilian =>
 {
     if (civilian.isKiller && killer.isAlive)
     {
-        score += 2500;    // Gain 2500 points for correct elimination
+        if (timeLeft > 0)    // If time has not run out yet
+        {
+            score += 2500;    // Gain 2500 points for correct elimination
+        }
         killer.isAlive = false;
         gameUpdate();
         gameOver("🏆 You Win 🏆", "Target Eliminated");
     }
     else if (civilian.isAlive)
     {
-        score -= 100;    // Lose 100 points for every incorrect elimination
+        if (timeLeft > 0)
+        {
+            score -= 100;    // Lose 100 points for every incorrect elimination
+        }
         civilian.isAlive = false;    // Assassinates NPC
     }
 }
@@ -442,14 +469,15 @@ const howToPlay = () =>
     ctx.font = "30px Comic Sans MS";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 170);
-    ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 110);
-    ctx.fillText("2. To win, left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 60);
-    ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 - 10);
-    ctx.fillText("3. Lose points on killiing an innocent and gain points on a win", canvas.width / 2, canvas.height / 2 + 40);
-    ctx.fillText("4. Avoid the killer or else it's game over and you lose points", canvas.width / 2, canvas.height / 2 + 90);
-    ctx.fillText("5. Use WASD to move", canvas.width / 2, canvas.height / 2 + 140);
-    ctx.fillText("6. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 190);
+    ctx.fillText("How To Play:", canvas.width / 2, canvas.height / 2 - 190);
+    ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 135);
+    ctx.fillText("2. To win, left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 85);
+    ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 - 35);
+    ctx.fillText("3. Lose points on killiing an innocent and gain points on a win", canvas.width / 2, canvas.height / 2 + 15);
+    ctx.fillText("4. Avoid the killer or else it's game over and you lose points", canvas.width / 2, canvas.height / 2 + 65);
+    ctx.fillText("5. Points only count in the first 60 seconds", canvas.width / 2, canvas.height / 2 + 115);
+    ctx.fillText("6. Use WASD to move", canvas.width / 2, canvas.height / 2 + 165);
+    ctx.fillText("7. Have fun! Press any button to start", canvas.width / 2, canvas.height / 2 + 215);
 }
 
 const gameUpdate = () =>
@@ -458,7 +486,10 @@ const gameUpdate = () =>
     // Loss collision detection
     if (checkHit(player, killer) && killer.isAlive)
     {
-        score -= 1000;    // Lose 1000 points for every player death;
+        if (timeLeft > 0)
+        {
+            score -= 1000;    // Lose 1000 points for every player death;
+        }
         player.isAlive = false;    // Kills player if they encouter the killer
     }
     // Rendering
