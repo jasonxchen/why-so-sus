@@ -531,7 +531,7 @@ const howToPlay = () =>
     ctx.fillText("1. Collect up to four clues to reveal information about the killer", canvas.width / 2, canvas.height / 2 - 135);
     ctx.fillText("2. To win, left click with your mouse who you think it is", canvas.width / 2, canvas.height / 2 - 85);
     ctx.fillText("...or use IJKL for lazoooor (stand still to charge)", canvas.width / 2, canvas.height / 2 - 35);
-    ctx.fillText("3. Lose points on killiing an innocent and gain points on a win", canvas.width / 2, canvas.height / 2 + 15);
+    ctx.fillText("3. Lose points on killing an innocent and gain points on a win", canvas.width / 2, canvas.height / 2 + 15);
     ctx.fillText("4. Avoid the killer or else it's game over and you lose points", canvas.width / 2, canvas.height / 2 + 65);
     ctx.fillText("5. Points only count within the time limit at the top", canvas.width / 2, canvas.height / 2 + 115);
     ctx.fillText("6. Use WASD to move", canvas.width / 2, canvas.height / 2 + 165);
