@@ -43,6 +43,11 @@ class Civilian extends Person
         this.shirtColor = colorArray[randomNum(0, colorArray.length)];    // Shirt color
         this.pantsColor = colorArray[randomNum(0, colorArray.length)];    // Pants color
         this.shoeColor = colorArray[randomNum(0, colorArray.length)];     // Shoe color
+        // No initial move directions
+        this.moveUp = false;
+        this.moveLeft = false;
+        this.moveDown = false;
+        this.moveRight = false;
     }
     render = () =>
     {
@@ -111,67 +116,120 @@ const randomNum = (min, max) =>    // max not included in range
 {
     return Math.floor(Math.random() * (max - min)) + min;
 }
-const randomMove = civilian =>
+const randomMove = civilian =>    // Gives NPC new movement direction
 {
-    const step = 25;    // # pixel step at a time
-    let randomDir = moveArray[randomNum(0, moveArray.length)];
-    if (civilian.isKiller && randomNum(0, 3) === 1)    // Killer has 33.33%(+25% random) chance of moving towards player (can adjust for difficulty)
+    let randomDir = moveArray[randomNum(0, moveArray.length)];    // Initial random direction
+    if (civilian.moveUp)    // What was the last movement direction
     {
-        if (Math.abs(player.x - killer.x) >= Math.abs(player.y - killer.y))    // If killer is farther horizontally than vertically
+        randomDir = "up";
+    }
+    else if (civilian.moveLeft)
+    {
+        randomDir = "left";
+    }
+    else if (civilian.moveDown)
+    {
+        randomDir = "down";
+    }
+    else if (civilian.moveRight)
+    {
+        randomDir = "right";
+    }
+    if (frameNum % 25 === 0 && frameNum !== 0)    // Restricts change direction to every # frames except the first (adjust as needed for natural roaming)
+    {
+        randomDir = moveArray[randomNum(0, moveArray.length)];    // New random direction
+        if (civilian.isKiller && randomNum(0, 3) === 1)    // Killer has 33.33%(+25% random) chance of moving towards player (can adjust for difficulty)
         {
-            if (player.x - killer.x > 0)    // If killer is to the left of player
+            if (Math.abs(player.x - killer.x) >= Math.abs(player.y - killer.y))    // If killer is farther horizontally than vertically
             {
-                randomDir = "right";    // Move right (towards player)
+                if (player.x - killer.x > 0)    // If killer is to the left of player
+                {
+                    randomDir = "right";    // Move right (towards player)
+                }
+                else
+                {
+                    randomDir = "left";    // Move left (towards player)
+                }
             }
             else
             {
-                randomDir = "left";    // Move left (towards player)
-            }
-        }
-        else
-        {
-            if (player.y - killer.y > 0)    // If killer is above player
-            {
-                randomDir = "down";    // Move down
-            }
-            else
-            {
-                randomDir = "up";    // Move up
+                if (player.y - killer.y > 0)    // If killer is above player
+                {
+                    randomDir = "down";    // Move down
+                }
+                else
+                {
+                    randomDir = "up";    // Move up
+                }
             }
         }
     }
-    switch (randomDir)
+    switch (randomDir)    // Change object variables based on movement direction
     {
         case "up":
-            civilian.y -= step;    // Move up
-            if (civilian.y < 0)
-            {
-                civilian.y = 0;    // Prevent moving out of top of screen
-            }
+            // Only one direction allowed at a time
+            civilian.moveUp = true;
+            civilian.moveLeft = false;
+            civilian.moveDown = false;
+            civilian.moveRight = false;
             break;
         case "left":
-            civilian.x -= step;    // Move left
-            if (civilian.x < 0)
-            {
-                civilian.x = 0;    // Prevent moving out of left of screen
-            }
+            civilian.moveUp = false;
+            civilian.moveLeft = true;
+            civilian.moveDown = false;
+            civilian.moveRight = false;
             break;
         case "down":
-            civilian.y += step;    // Move down
-            if (civilian.y + civilian.height > canvas.height)
-            {
-                civilian.y = canvas.height - civilian.height;        // Prevent moving out of bottom of screen
-            }
+            civilian.moveUp = false;
+            civilian.moveLeft = false;
+            civilian.moveDown = true;
+            civilian.moveRight = false;
             break;
         case "right":
-            civilian.x += step;    // Move right
-            if (civilian.x + civilian.width > canvas.width)
-            {
-                civilian.x = canvas.width - civilian.width;        // Prevent moving out of right of screen
-            }
+            civilian.moveUp = false;
+            civilian.moveLeft = false;
+            civilian.moveDown = false;
+            civilian.moveRight = true;
             break;
         default:
             break;
+    }
+    startMove(civilian);    // Calculate new coordinates
+}
+const startMove = civilian =>
+{
+    const step = 2;    // # pixel step at a time (can adjust for difficulty)
+    if (civilian.moveUp)
+    {
+        civilian.y -= step;    // Move up
+        if (civilian.y < 0)
+        {
+            civilian.y = 0;    // Prevent moving out of top of screen
+        }
+    }
+    else if (civilian.moveLeft)
+    {
+        civilian.x -= step;    // Move left
+        if (civilian.x < 0)
+        {
+            civilian.x = 0;    // Prevent moving out of left of screen
+        }
+    }
+    else if (civilian.moveDown)
+    {
+        civilian.y += step;    // Move down
+        if (civilian.y + civilian.height > canvas.height)
+        {
+            civilian.y = canvas.height - civilian.height;        // Prevent moving out of bottom of screen
+        }
+    }
+    else if (civilian.moveRight)
+    {
+        civilian.x += step;    // Move right
+        if (civilian.x + civilian.width > canvas.width)
+        {
+            civilian.x = canvas.width - civilian.width;        // Prevent moving out of right of screen
+        }
     }
 }
 
@@ -511,10 +569,7 @@ const gameUpdate = () =>
     {
         if (civilian.isAlive)
         {
-            if (frameNum % 25 === 0 && frameNum !== 0)    // Restricts movement to every # frames except the first
-            {
-                randomMove(civilian);    // Random movement direction
-            }
+            randomMove(civilian);    // Calculate next NPC coordinate
             civilian.render();
         }
     })
@@ -537,7 +592,7 @@ let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by
 const civArray = [];
 const clueArray = [];
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
-const civInit = 63;    // How many NPCs to start out with
+const civInit = 63;    // How many NPCs to start out with (can adjust for difficulty)
 let killerIndex = Math.floor(Math.random() * civInit);
 const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
 for (let i = 0; i < civInit; i++)    // Fill array with NPCs
