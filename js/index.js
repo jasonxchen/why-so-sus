@@ -507,10 +507,6 @@ const gameUpdate = () =>
             }   
         }
     })
-    if (player.isAlive)
-    {
-        player.render();
-    }
     civArray.forEach(civilian =>
     {
         if (civilian.isAlive)
@@ -522,6 +518,10 @@ const gameUpdate = () =>
             civilian.render();
         }
     })
+    if (player.isAlive)
+    {
+        player.render();
+    }
     playerInput();    // Make every gameUpdate factor in player input
     if (!player.isAlive)
     {
