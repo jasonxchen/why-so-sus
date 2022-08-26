@@ -48,7 +48,7 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
 
 ## Tech Stack
 
-* HTML (Canvas)
+* HTML5 (Canvas)
 * CSS
 * JavaScript
 
@@ -62,3 +62,8 @@ You are a player surrounded by civilians. Feel free to wander around, but be car
     * e.g. If 7 colors available for each clothing item; 7<sup>4</sup> = 2401 possible permutations
     * Also consider having less colors so that the player needs more clues to pinpoint the target
     * Answer: 4 different colors for 4 different clothing items for 63 NPCs ended up being functional
+* Post-first deployment:
+    * Should have started out with requestAnimationFrame instead of setInterval
+    * Had some trouble implementing safe spawning zone, but now thought of a way using collision detection and recursion
+    * Other than implementing more stretch goals, adjusting difficulty variables may be needed depending on user feedback
+    * Accessibility options are worthwhile to revisit to give more interested users a way to play
