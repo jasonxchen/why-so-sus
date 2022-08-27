@@ -75,6 +75,7 @@ canvas
 .settings-row
 {
     display: flex;
+    gap: 50px;
     justify-content: center;
     padding: 10px;
 }

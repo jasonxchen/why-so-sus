@@ -10,7 +10,9 @@
     <body>
         <div id="play-area">
             <main>
-                <canvas id="canvas"><!-- Game renders and updates here --></canvas>
+                <canvas id="canvas">
+                    <!-- Game renders and updates here -->
+                </canvas>
             </main>
         </div>
         <div class="clue-container">
@@ -27,6 +29,11 @@
             <!-- JS-controlled timer -->
         </div>
         <div class="settings-row">
+            <select id="difficulties">
+                <option value="easy">Easy</option>
+                <option value="medium" selected="selected">Medium</option>    <!-- Default difficulty is medium -->
+                <option value="hard">Hard</option>
+            </select>
             <p id="reset-score-clickable" class="disable-highlight">Reset Score</p>
         </div>
         <script src="./js/index.js"></script>

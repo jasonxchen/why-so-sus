@@ -2,9 +2,10 @@
 const canvas = document.querySelector("canvas");
 const clueList = document.querySelector("#clue-list");
 const scoreNum = document.querySelector(".score-number");
+const difficulties = document.querySelector("#difficulties");
 const resetScoreBtn = document.querySelector("#reset-score-clickable");
 const timer = document.querySelector("#timer");
-const timeLimit = 120;    // Total seconds given for earning points
+const timeLimit = 90;    // Total seconds given for earning points
 let timePassed = 0;
 let timeLeft = timeLimit;
 let timerInterval = null;
@@ -488,6 +489,27 @@ canvas.addEventListener("mousedown", e =>
     })
 })
 
+difficulties.addEventListener("change", e =>
+{
+    switch (e.target.value)
+    {
+        case "easy":
+            civInit = 19;
+            resetScore();
+            break;
+        case "medium":
+            civInit = 39;
+            resetScore();
+            break;
+        case "hard":
+            civInit = 63;
+            resetScore();
+            break;
+        default:
+            break;
+    }
+})
+
 const checkHit = (objOne, objTwo) =>
 {
     // If objOne passes objTwo on objTwo's right, left, bottom, and top at the same time respectively
@@ -628,7 +650,7 @@ let frameNum = 0;    // Keep track of frame count; helps to slow NPC movement by
 const civArray = [];
 const clueArray = [];
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
-const civInit = 63;    // How many NPCs to start out with (can adjust for difficulty)
+let civInit = 47;    // How many NPCs to start out with (default: medium difficulty)
 let killerIndex = Math.floor(Math.random() * civInit);
 let newCoord = randomCoord(25, 50);    // Random coordinate generation for Killer
 const killer = new Killer(newCoord[0], newCoord[1], 25, 50);
