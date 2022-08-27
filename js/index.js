@@ -11,7 +11,7 @@ const ctx = canvas.getContext("2d");    // Apply 2D rendering context for canvas
 // Adjust canvas resolution based on screen resolution used
 canvas.setAttribute("height", getComputedStyle(canvas).height);
 canvas.setAttribute("width", getComputedStyle(canvas).width);
-const colorArray = ["red", "lime", "blue", "black"];
+const colorArray = ["red", "lime", "blue", "black", "tan"];
 const moveArray = ["up", "left", "down", "right"];
 const laserArray = [0, 0, 0, 0];    // Initial power of lasers at top, left, bottom, and right set to 0 respectively
 const keys = [false, false, false, false, false, false, false, false];    // Set [W,A,S,D,I,J,K,L] initial press to false
