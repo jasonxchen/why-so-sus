@@ -2,6 +2,7 @@
 const canvas = document.querySelector("canvas");
 const clueList = document.querySelector("#clue-list");
 const scoreNum = document.querySelector(".score-number");
+const resetScoreBtn = document.querySelector("#reset-score-clickable");
 const timer = document.querySelector("#timer");
 const timeLimit = 120;    // Total seconds given for earning points
 let timePassed = 0;
@@ -618,18 +619,18 @@ clueArray.push(newClue);
 newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
 clueArray.push(newClue);
 
+// START GAME
 let gameUpdateInterval = 0;    // Make sure interval is not defined in order to show instructions first
 // Interval is set later in playerInput() when a keyboard button is pressed
 howToPlay();    // Display objectives and controls on screen before rendering game
 
+// RESET FUNCTIONS
 const resetGame = () =>    // Frontend and backend reset of game variables
 {
     while (clueList.firstChild)    // Clears clue list
     {
         clueList.removeChild(clueList.firstChild);
     }
-//    scoreNum.innerText = "0";    // Optional: reset score every replay
-//    score = 0;    // Optional: reset score every replay
     frameNum = 0;
     // Bring player back to life and reset position
     player.x = canvas.width / 2 - 12.5;
@@ -670,3 +671,17 @@ const resetGame = () =>    // Frontend and backend reset of game variables
     clueArray.push(newClue);
     gameUpdateInterval = setInterval(gameUpdate, 20);    // Refreshes board and restarts game ticking
 }
+
+const resetScore = () =>
+{
+    clearInterval(gameUpdateInterval);
+    clearInterval(timerInterval);
+    timer.innerText = timeLimit;
+    scoreNum.innerText = "0";
+    score = 0;
+    timePassed = 0;
+    timeLeft = timeLimit;
+    resetGame();
+    startTimer();
+}
+resetScoreBtn.addEventListener("click", resetScore);
