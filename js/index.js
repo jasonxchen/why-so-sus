@@ -478,6 +478,14 @@ const checkLaserHit = (xPos, yPos, width, height, objTwo) =>
     }
 }
 
+const replay = e =>    // Define replay event (Listener added in gameOver function)
+{
+    if (e.key === " ")
+    {
+        resetGame();    // Calls function to reset game state
+        document.removeEventListener("keydown", replay);    // Remove event listener so it only registers here and once
+    }
+}
 const checkIfWin = civilian =>
 {
     if (civilian.isKiller && killer.isAlive)
@@ -510,14 +518,6 @@ const gameOver = (outcome, reason) =>
     ctx.fillText(outcome, canvas.width / 2, canvas.height / 2 - 60);
     ctx.fillText(reason, canvas.width / 2, canvas.height / 2 - 10);
     ctx.fillText("Press [Space] to play again", canvas.width / 2, canvas.height / 2 + 50);
-    const replay = e =>    // Define replay event
-    {
-        if (e.key === " ")
-        {
-            resetGame();    // Calls function to reset game state
-            document.removeEventListener("keydown", replay);    // Remove event listener so it only registers here and once
-        }
-    }
     document.addEventListener("keydown", replay);    // On key press, call replay function
 }
 
@@ -674,13 +674,17 @@ const resetGame = () =>    // Frontend and backend reset of game variables
 
 const resetScore = () =>
 {
+    document.removeEventListener("keydown", replay);    // Important for cases where reset button is pressed after gameOver is called
     clearInterval(gameUpdateInterval);
+    // Reset time
     clearInterval(timerInterval);
     timer.innerText = timeLimit;
-    scoreNum.innerText = "0";
-    score = 0;
     timePassed = 0;
     timeLeft = timeLimit;
+    // Reset score
+    scoreNum.innerText = "0";
+    score = 0;
+    // Reset everything else
     resetGame();
     startTimer();
 }
