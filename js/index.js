@@ -16,6 +16,13 @@ const colorArray = ["red", "lime", "blue", "black", "tan"];
 const moveArray = ["up", "left", "down", "right"];
 const laserArray = [0, 0, 0, 0];    // Initial power of lasers at top, left, bottom, and right set to 0 respectively
 const keys = [false, false, false, false, false, false, false, false];    // Set [W,A,S,D,I,J,K,L] initial press to false
+const preventSpawnZone =    // Define area to exclude NPCs or clues from spawning in (square of 200x200px on top of Player)
+{
+    x: 412,
+    y: 188,
+    width: 200,
+    height: 200
+};
 
 class Person    // Super class for all moving game entities
 {
@@ -116,6 +123,34 @@ const startTimer = () =>
 const randomNum = (min, max) =>    // max not included in range
 {
     return Math.floor(Math.random() * (max - min)) + min;
+}
+const randomCoord = (objWidth, objHeight) =>    // Factor in the dimensions of the object needing coordinate (NPCs and clues have different heights)
+{
+    // Initial random coordinates
+    // Subtracting width/height and 1px to allow space for object model
+    let xPos = Math.floor(Math.random() * (canvas.width - objWidth - 1));
+    let yPos = Math.floor(Math.random() * (canvas.height - objHeight - 1));
+    let pretendHitbox =
+    {
+        x: xPos,
+        y: yPos,
+        width: objWidth,
+        height: objHeight
+    }
+    while (checkHit(preventSpawnZone, pretendHitbox))    // If generated coordinates are in the zone
+    {
+        // New random coordinates
+        xPos = Math.floor(Math.random() * (canvas.width - objWidth - 1));
+        yPos = Math.floor(Math.random() * (canvas.height - objHeight - 1));
+        pretendHitbox =
+        {
+            x: xPos,
+            y: yPos,
+            width: objWidth,
+            height: objHeight
+        }
+    }
+    return [xPos, yPos];    // Return x-coordinate at index 0 and y-coordinate at index 1
 }
 const randomMove = civilian =>    // Gives NPC new movement direction
 {
@@ -595,7 +630,8 @@ const clueArray = [];
 const player = new Person(canvas.width / 2 - 12.5, canvas.height / 2 - 25, 25, 50);    // Initialization of Player in the middle of canvas
 const civInit = 63;    // How many NPCs to start out with (can adjust for difficulty)
 let killerIndex = Math.floor(Math.random() * civInit);
-const killer = new Killer(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
+let newCoord = randomCoord(25, 50);    // Random coordinate generation for Killer
+const killer = new Killer(newCoord[0], newCoord[1], 25, 50);
 for (let i = 0; i < civInit; i++)    // Fill array with NPCs
 {
     if (i === killerIndex)    // Make this random NPC the killer
@@ -604,19 +640,23 @@ for (let i = 0; i < civInit; i++)    // Fill array with NPCs
     }
     else
     {
-        // 25px and 50px for max in random num gen to allow space for object model
-        const newCiv = new Civilian(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
+        newCoord = randomCoord(25, 50);
+        const newCiv = new Civilian(newCoord[0], newCoord[1], 25, 50);
         civArray.push(newCiv);
     }
 }
 // Pushing the (4) clues to array
-let newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Hat color: ${killer.hatColor}`);
+newCoord = randomCoord(25, 25);
+let newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Hat color: ${killer.hatColor}`);
 clueArray.push(newClue);
-newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shirt color: ${killer.shirtColor}`);
+newCoord = randomCoord(25, 25);
+newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Shirt color: ${killer.shirtColor}`);
 clueArray.push(newClue);
-newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Pants color: ${killer.pantsColor}`);
+newCoord = randomCoord(25, 25);
+newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Pants color: ${killer.pantsColor}`);
 clueArray.push(newClue);
-newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
+newCoord = randomCoord(25, 25);
+newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Shoe color: ${killer.shoeColor}`);
 clueArray.push(newClue);
 
 // START GAME
@@ -637,8 +677,9 @@ const resetGame = () =>    // Frontend and backend reset of game variables
     player.y = canvas.height / 2 - 25;
     player.isAlive = true;
     // Bring killer back to life with new position and colors
-    killer.x = randomNum(0, canvas.width - 25);
-    killer.y = randomNum(0, canvas.height - 50);
+    newCoord = randomCoord(25, 50);
+    killer.x = newCoord[0];
+    killer.y = newCoord[1];
     killer.isAlive = true;
     killer.hatColor = colorArray[randomNum(0, colorArray.length)];
     killer.shirtColor = colorArray[randomNum(0, colorArray.length)];
@@ -656,18 +697,23 @@ const resetGame = () =>    // Frontend and backend reset of game variables
         else
         {
             // 25px and 50px for max in random num gen to allow space for object model
-            const newCiv = new Civilian(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 50), 25, 50);
+            newCoord = randomCoord(25, 50);
+            const newCiv = new Civilian(newCoord[0], newCoord[1], 25, 50);
             civArray.push(newCiv);
         }
     }
     clueArray.length = 0;    // Reset array of clues
-    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Hat color: ${killer.hatColor}`);
+    newCoord = randomCoord(25, 25);
+    newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Hat color: ${killer.hatColor}`);
     clueArray.push(newClue);
-    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shirt color: ${killer.shirtColor}`);
+    newCoord = randomCoord(25, 25);
+    newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Shirt color: ${killer.shirtColor}`);
     clueArray.push(newClue);
-    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Pants color: ${killer.pantsColor}`);
+    newCoord = randomCoord(25, 25);
+    newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Pants color: ${killer.pantsColor}`);
     clueArray.push(newClue);
-    newClue = new Clue(randomNum(0, canvas.width - 25), randomNum(0, canvas.height - 25), 25, 25, `Shoe color: ${killer.shoeColor}`);
+    newCoord = randomCoord(25, 25);
+    newClue = new Clue(newCoord[0], newCoord[1], 25, 25, `Shoe color: ${killer.shoeColor}`);
     clueArray.push(newClue);
     gameUpdateInterval = setInterval(gameUpdate, 20);    // Refreshes board and restarts game ticking
 }

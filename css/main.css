@@ -85,3 +85,11 @@ canvas
     color: white;
     cursor: pointer;
 }
+
+.disable-highlight
+{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
